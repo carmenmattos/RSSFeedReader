@@ -1,0 +1,62 @@
+@using RSSFeedReader.UI.Models
+@using RSSFeedReader.UI.Services
+@inject SubscriptionClient SubscriptionClient
+
+<EditForm Model="@model" OnSubmit="HandleSubmitAsync">
+    <div class="mb-3">
+        <label for="feedUrl" class="form-label">Feed URL</label>
+        <InputText id="feedUrl" class="form-control" @bind-Value="model.Url" placeholder="https://example.com/feed.xml" />
+    </div>
+
+    <button type="submit" class="btn btn-primary" disabled="@isSubmitting">
+        @(isSubmitting ? "Adding..." : "Add subscription")
+    </button>
+
+    @if (!string.IsNullOrWhiteSpace(errorMessage))
+    {
+        <p class="text-danger mt-3 mb-0">@errorMessage</p>
+    }
+</EditForm>
+
+@code {
+    [Parameter]
+    public EventCallback<FeedSubscription> OnAdded { get; set; }
+
+    private readonly SubscriptionInputModel model = new();
+    private bool isSubmitting;
+    private string? errorMessage;
+
+    private async Task HandleSubmitAsync(EditContext context)
+    {
+        var trimmedUrl = model.Url?.Trim();
+
+        if (string.IsNullOrWhiteSpace(trimmedUrl))
+        {
+            errorMessage = "Enter a URL to add a subscription.";
+            return;
+        }
+
+        isSubmitting = true;
+        errorMessage = null;
+
+        try
+        {
+            var subscription = await SubscriptionClient.AddSubscriptionAsync(trimmedUrl);
+            model.Url = string.Empty;
+            await OnAdded.InvokeAsync(subscription);
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+
+    private sealed class SubscriptionInputModel
+    {
+        public string Url { get; set; } = string.Empty;
+    }
+}

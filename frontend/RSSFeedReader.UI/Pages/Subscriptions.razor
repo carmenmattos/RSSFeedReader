@@ -1,0 +1,60 @@
+@page "/subscriptions"
+@using RSSFeedReader.UI.Components
+@using RSSFeedReader.UI.Models
+@using RSSFeedReader.UI.Services
+@inject SubscriptionClient SubscriptionClient
+
+<PageTitle>Subscriptions</PageTitle>
+
+<h1>RSS Feed Reader</h1>
+<p class="text-muted">Add a feed URL and keep the current session list in memory.</p>
+
+<SubscriptionForm OnAdded="HandleSubscriptionAdded" />
+
+@if (isLoading)
+{
+    <p class="mt-4">Loading subscriptions...</p>
+}
+else if (!subscriptions.Any())
+{
+    <p class="mt-4">No subscriptions yet. Add one above to begin.</p>
+}
+else
+{
+    <ul class="list-group mt-4">
+        @foreach (var subscription in subscriptions)
+        {
+            <li class="list-group-item">@subscription.Url</li>
+        }
+    </ul>
+}
+
+@code {
+    private List<FeedSubscription> subscriptions = [];
+    private bool isLoading;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadSubscriptionsAsync();
+    }
+
+    private async Task LoadSubscriptionsAsync()
+    {
+        isLoading = true;
+
+        try
+        {
+            subscriptions = (await SubscriptionClient.GetSubscriptionsAsync()).ToList();
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task HandleSubscriptionAdded(FeedSubscription subscription)
+    {
+        subscriptions = new List<FeedSubscription> { subscription }.Concat(subscriptions).ToList();
+        await LoadSubscriptionsAsync();
+    }
+}
