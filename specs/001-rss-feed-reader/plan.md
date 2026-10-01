@@ -1,4 +1,4 @@
-# Implementation Plan: RSS Feed Reader
+# Implementation Plan: MVP RSS Feed Reader
 
 **Branch**: `001-rss-feed-reader` | **Date**: 2026-10-01 | **Spec**: [spec.md](./spec.md)
 
@@ -6,31 +6,31 @@
 
 ## Summary
 
-Build a lightweight web-based RSS feed reader that allows users to add multiple feeds, refresh them for new posts, and browse articles by publication time and source. The app will prioritize a simple, fast reading experience with clear error handling, feed persistence, and state management for read/unread items.
+Build a minimal RSS/Atom subscription-management proof of concept using ASP.NET Core Web API and Blazor WebAssembly. The MVP focuses on adding feed URLs and displaying the resulting subscription list in a simple local application without introducing feed fetching, validation, persistence, or production-ready complexity.
 
 ## Technical Context
 
-**Language/Version**: TypeScript 5.x
+**Language/Version**: C# with .NET 8, ASP.NET Core, Blazor WebAssembly
 
-**Primary Dependencies**: React, Vite, rss-parser or equivalent feed parsing library, local storage or lightweight persistence layer
+**Primary Dependencies**: ASP.NET Core Web API, Blazor WebAssembly, minimal HTTP client and UI state management, no feed parsing library in MVP
 
-**Storage**: Browser local storage for v1, with a simple repository layer that could later be replaced by a backend or database
+**Storage**: In-memory collection on the backend for the current session only
 
-**Testing**: Vitest for unit tests, React Testing Library for UI flows, manual feed validation for real-world RSS sources
+**Testing**: xUnit for API/domain validation, browser-based verification for the UI workflow, and simple end-to-end checks for add/list behavior
 
-**Target Platform**: Web application for desktop and mobile browsers
+**Target Platform**: Local web app running on Windows, macOS, or Linux desktop browsers
 
 **Project Type**: web-application
 
-**Performance Goals**: Load feed list in under 2 seconds for 10 active feeds; refresh updates within 30 seconds under normal network conditions
+**Performance Goals**: UI updates immediately after adding a subscription; small subscription lists remain responsive in the current session
 
-**Constraints**: Works with public RSS and Atom feeds; supports graceful failure when a feed is malformed or unavailable; no authentication or multi-user sync in v1
+**Constraints**: Single-user demo only; no background polling; no persistence; no feed fetching or parsing; no validation assumptions beyond the MVP acceptance criteria
 
-**Scale/Scope**: Single-user personal feed reader; support for a manageable list of feed subscriptions without requiring a full backend architecture
+**Scale/Scope**: Minimal POC with a few subscriptions in memory; no multi-user, no database, no production hardening
 
 ## Constitution Check
 
-No project constitution was found in the repository, so the default implementation governance is to keep the solution simple, user-centered, and testable. The proposed design keeps the product scoped to a single-user web app and avoids overengineering before the core reading workflow is delivered.
+The project constitution in [.specify/memory/constitution.md](../../.specify/memory/constitution.md) requires secure-by-default development, maintainable architecture, test-first quality, and scope discipline. This plan stays consistent by keeping the MVP intentionally narrow, preserving a clean backend/frontend split, and avoiding feature expansion beyond subscription management.
 
 ## Project Structure
 
@@ -49,41 +49,37 @@ specs/001-rss-feed-reader/
 ```
 
 ```text
-src/
-├── components/
-│   ├── FeedList.tsx
-│   ├── ArticleList.tsx
-│   ├── ArticleDetail.tsx
-│   └── AddFeedForm.tsx
-├── features/
-│   ├── feeds/
-│   └── articles/
-├── services/
-│   ├── feedParser.ts
-│   ├── storage.ts
-│   └── refreshService.ts
-├── models/
-│   ├── FeedSource.ts
-│   └── FeedItem.ts
-├── app/
-│   └── App.tsx
-├── styles/
-│   └── global.css
-└── utils/
-    └── formatters.ts
+backend/
+├── RSSFeedReader.Api/
+│   ├── Controllers/
+│   │   └── SubscriptionsController.cs
+│   ├── Models/
+│   │   └── FeedSubscription.cs
+│   ├── Services/
+│   │   └── SubscriptionService.cs
+│   ├── Program.cs
+│   └── Properties/
+│       └── launchSettings.json
+└── RSSFeedReader.Api.Tests/
+    └── SubscriptionControllerTests.cs
 
-tests/
-├── contract/
-│   └── feed-api.spec.ts
-├── integration/
-│   └── feed-reader.spec.ts
-└── unit/
-    ├── feedParser.spec.ts
-    └── storage.spec.ts
+frontend/
+├── RSSFeedReader.UI/
+│   ├── Pages/
+│   │   └── Subscriptions.razor
+│   ├── Services/
+│   │   └── SubscriptionClient.cs
+│   ├── Components/
+│   │   └── SubscriptionForm.razor
+│   ├── Program.cs
+│   └── wwwroot/
+│       └── appsettings.json
+└── RSSFeedReader.UI.Tests/
+    └── SubscriptionPageTests.cs
 ```
 
-**Structure Decision**: A single-project web application is the best fit for the v1 scope. The app will keep data logic and UI concerns separated into feature folders so the feed reader remains manageable while still allowing clear story-based implementation.
+**Structure Decision**: A two-project ASP.NET Core + Blazor solution is the correct fit for the stakeholder-approved MVP. It preserves a clean backend/frontend boundary while keeping the implementation compact and ready for future extended-MVP features.
 
 ## Complexity Tracking
 
-This feature does not currently require a violation waiver. The design stays within a single web app and uses a simple local persistence layer to avoid unnecessary backend complexity.
+No waiver is required. The design remains intentionally small and avoids unnecessary infrastructure, persistence, or feed-processing complexity that would exceed the approved MVP scope.

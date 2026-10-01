@@ -1,33 +1,33 @@
-# Research: RSS Feed Reader
+# Research: MVP RSS Feed Reader
 
-## Decision 1: Feed Format Support
+## Decision 1: Technology stack
 
-**Decision**: Support both RSS and Atom feeds in the first release.
+**Decision**: Use ASP.NET Core Web API for the backend and Blazor WebAssembly for the frontend.
 
-**Rationale**: These are the most common syndication formats and are broadly supported by public publishers. Supporting both keeps the feature useful without requiring a custom parser for every niche format.
+**Rationale**: This matches the project’s required .NET-first architecture and keeps the solution simple, cross-platform, and ready for incremental growth. It also aligns with the stakeholder guidance that the product may evolve toward richer features later without requiring a rewrite.
 
-**Trade-offs**: A standard parser library reduces custom code and maintenance, but it may still require normalization for fields that differ slightly between feed types.
+**Trade-offs**: The stack is more opinionated than a JavaScript-only client, but it is consistent with the project requirement to use C# and .NET throughout the implementation.
 
-## Decision 2: Persistence Model
+## Decision 2: Storage model for the MVP
 
-**Decision**: Store subscribed feeds and reading state in browser local storage for v1.
+**Decision**: Keep subscriptions in memory within the backend for the current session only.
 
-**Rationale**: This keeps the project lightweight and self-contained for a single-user prototype or training app, while still enabling a usable experience across sessions.
+**Rationale**: The project scope explicitly defines the MVP as a local proof-of-concept and does not require persistence or database support. In-memory storage keeps the implementation minimal and directly supports the demo requirement.
 
-**Trade-offs**: Local storage is simple and fast, but it is not ideal for multi-device sync or large-scale data sharing.
+**Trade-offs**: Data will not survive application restarts, but that is acceptable for the approved MVP and avoids introducing unnecessary infrastructure.
 
-## Decision 3: Refresh Strategy
+## Decision 3: Scope boundaries
 
-**Decision**: Refresh feeds on demand with a visible “refresh” action and optional automatic refresh on open.
+**Decision**: Do not include feed fetching, parsing, validation, item display, or persistence in the MVP.
 
-**Rationale**: This keeps the app predictable and gives users control over network usage while still supporting a fresh reading experience.
+**Rationale**: The stakeholder documents require the simplest feasible functionality: adding a URL and showing it in a list. Any broader feed-reader behavior is explicitly deferred to the Extended-MVP or post-MVP phase.
 
-**Trade-offs**: Manual refresh avoids constant background work, but it may feel slower than a fully automatic feed update model.
+**Trade-offs**: This limits the first version, but it keeps the project focused, fast to build, and easy to validate against the required success criteria.
 
-## Decision 4: Reading Experience
+## Decision 4: Local verification strategy
 
-**Decision**: Keep reading simple with an article list and a detail view or external link open.
+**Decision**: Validate the app through .NET build and run commands plus browser checks for the add/list flow.
 
-**Rationale**: The MVP primarily focuses on feed ingestion and content consumption, not a large editorial workflow.
+**Rationale**: The project is a local demo and does not need a separate client-side toolchain. End-to-end verification can be done by starting the API and Blazor app, submitting subscription URLs, and checking the UI list updates.
 
-**Trade-offs**: A simple two-panel or list-plus-detail layout is easier to implement and test than a more advanced dashboard or personalization system.
+**Trade-offs**: This approach is intentionally lightweight, but it intentionally excludes feed-content features that are outside the MVP scope.

@@ -1,35 +1,56 @@
-# Quickstart: RSS Feed Reader
+# Quickstart: MVP RSS Feed Reader
 
 ## Prerequisites
 
-- Node.js 18 or newer
-- npm or pnpm
-- A local browser to preview the app
+- .NET SDK 8.0 or newer
+- An IDE such as Visual Studio or VS Code
+- A local browser to test the Blazor UI
 
-## Setup
+## Project setup
 
-1. Initialize the project with Vite and React.
-2. Install dependencies for routing, state management, and feed parsing.
-3. Create the feed service, article state store, and UI shell.
+1. Create the API project:
+
+```bash
+dotnet new webapi -n RSSFeedReader.Api -f net8.0
+```
+
+2. Create the frontend project:
+
+```bash
+dotnet new blazorwasm -n RSSFeedReader.UI -f net8.0
+```
+
+3. Add a minimal model for subscriptions and keep the data in memory only for the MVP.
+4. Configure the API to expose an endpoint for adding and listing subscriptions.
+5. Configure the Blazor app to call the API and render the subscription list.
 
 ## Run the app
 
+Start the backend:
+
 ```bash
-npm install
-npm run dev
+cd backend/RSSFeedReader.Api
+dotnet run
+```
+
+Start the frontend:
+
+```bash
+cd frontend/RSSFeedReader.UI
+dotnet run
 ```
 
 ## Typical workflow
 
-1. Enter a valid RSS or Atom URL in the add-feed form.
-2. Confirm that the app loads recent articles from that source.
-3. Refresh the feed to check for new posts.
-4. Open an article or external link to read the full content.
-5. Mark items as read and filter unread entries as needed.
+1. Open the Blazor page in the browser.
+2. Enter a subscription URL in the form.
+3. Submit the form to add the feed URL to the list.
+4. Confirm the UI updates immediately and displays the added subscription.
+5. Repeat with additional URLs to verify the list continues to show all entries.
 
 ## Validation
 
-- Confirm one feed loads correctly and the article list updates.
-- Check that invalid URLs show a clear error message.
-- Verify that feed refresh preserves existing entries on failure.
-- Confirm that removing a feed stops it from appearing in the active list.
+- Confirm the API accepts new subscription requests and returns the current list.
+- Confirm the UI updates immediately after submitting a URL.
+- Verify that the app remains in-memory only and does not depend on a database or persistence layer.
+- Confirm the application remains focused on the MVP: add subscriptions and list them, without feed fetching or parsing.
