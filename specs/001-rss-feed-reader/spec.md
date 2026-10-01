@@ -8,7 +8,7 @@
 
 **Input**: User description: "Build a lightweight RSS feed reader that lets users add feed URLs, refresh content, and browse articles from multiple sources."
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Add and browse a feed (Priority: P1)
 
@@ -66,7 +66,7 @@ A user wants to keep a manageable reading experience by separating feeds, filter
 - How does the system behave when no items are available after a refresh?
 - What happens when a user has a pending refresh while a new feed is being added?
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -81,14 +81,14 @@ A user wants to keep a manageable reading experience by separating feeds, filter
 - **FR-009**: The system MUST handle failed refreshes and invalid feed content gracefully without breaking the rest of the reader.
 - **FR-010**: The system MUST enable users to open article details or the original external page from each feed item.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **FeedSource**: Represents a subscribed RSS or Atom source, including its title, URL, and last refresh timestamp.
 - **FeedItem**: Represents a single article or entry, including title, summary, link, publication date, and read state.
 - **UserReadingState**: Tracks which items are read or unread, and whether a feed is active or removed.
 - **RefreshResult**: Represents the outcome of a refresh attempt, including counts of added, updated, and failed items.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 
